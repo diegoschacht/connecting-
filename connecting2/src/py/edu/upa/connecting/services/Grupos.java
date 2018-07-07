@@ -16,8 +16,10 @@ import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,6 +43,128 @@ public class Grupos {
 	 */
 	@Resource(lookup = "java:jboss/datasources/ConnectingDS")
 	DataSource ds;
+	
+	@DELETE
+	@Path("/{id_grupo}/integrantes/{id_usuario}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response abandonarGrupo(@PathParam("id_usuario") String codUsuario, @PathParam("id_grupo") int codGrupo) {
+		
+		Map<String, String> responseObj = new HashMap<String, String>();
+		Response.ResponseBuilder builder = null;
+		
+		try (Connection con = ds.getConnection();
+				 PreparedStatement ps = con.prepareStatement("delete from integrantes_grupo "
+				 												+ "where cod_usuario = ? "
+				 												+ "and cod_grupo = ?;")
+			) {
+			
+			ps.setString(1, codUsuario);
+			ps.setInt(2, codGrupo);	 
+			
+			if(ps.executeUpdate()!=0) {
+				responseObj.put("mensaje","El usuario "+ codUsuario + " abandono el grupo "+ codGrupo);
+				builder = Response.ok(responseObj);
+			} else {
+				responseObj.put("mensaje","No se encontró el grupo "+ codGrupo + " o usuario " +codUsuario);
+				builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			responseObj.put("error","Ocurrio el siguiente error: " +  e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		
+		return builder.build();
+		
+	}
+	
+	@POST
+	@Path("/{id_grupo}/integrantes/{id_usuario}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response modificarGrupo(@PathParam("id_usuario") int codUsuario, @PathParam("id_grupo") int codGrupo) {
+
+		Map<String, String> responseObj = new HashMap<String, String>();
+		
+		Response.ResponseBuilder builder = null;
+
+		try (Connection con = ds.getConnection();
+			 PreparedStatement ps = con.prepareStatement("insert into integrantes_grupo (cod_usuario, cod_grupo) values (?,?);")
+			 ) {
+						
+			ps.setInt(1, codUsuario);
+			ps.setInt(2, codGrupo);	 
+			
+			ps.executeUpdate();
+			
+			responseObj.put("mensaje","El usuario "+codUsuario+ " se unio al grupo " +codGrupo+ " exitosamente");
+			builder = Response.ok(responseObj);
+			
+		} catch (Exception e) {
+			// Handle generic exceptions.
+			
+			e.printStackTrace();
+			
+			if(e.getMessage().contains("no está presente en la tabla «grupo».")) {
+				responseObj.put("mensaje","No se encontro el grupo con el codigo: " +  codGrupo);
+				builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+			} else if(e.getMessage().contains("no está presente en la tabla «usuario».")) {
+				responseObj.put("mensaje","No se encontro el usuario con el codigo: " +  codUsuario);
+				builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+			} else if(e.getMessage().contains("Ya existe la llave (cod_usuario, cod_grupo)")) {
+				responseObj.put("mensaje","El usuario " +  codUsuario + " ya pertenece al grupo " + codGrupo);
+				builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+			} else {
+				responseObj.put("error","Ocurrio el siguiente error: " +  e.getMessage());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+			
+		}
+
+		return builder.build();
+	}
+	
+	
+	@POST
+	@Path("/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response modificarGrupo(Grupo grupo, @PathParam("id") int codGrupo) {
+
+		Map<String, String> responseObj = new HashMap<String, String>();
+		
+		Response.ResponseBuilder builder = null;
+
+		try (Connection con = ds.getConnection();
+			 PreparedStatement ps = con.prepareStatement("update GRUPO set nombre = ?, objetivo = ?,longitud=?, latitud=?"
+			 										   + "where cod_grupo = ?")
+			 ) {
+						
+			ps.setString(1, grupo.getNombre());
+			ps.setString(2, grupo.getObjetivo());
+			ps.setInt(3, grupo.getLongitud());
+			ps.setInt(4, grupo.getLatitud());
+			ps.setLong(5, codGrupo);	
+			
+			if(ps.executeUpdate()!=0) {
+				responseObj.put("mensaje","Grupo modificado exitosamente");
+				builder = Response.ok(responseObj);
+			}
+			else {
+			responseObj.put("mensaje","No se encontró grupo con el código: " + codGrupo);
+			builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+			}
+			
+		} catch (Exception e) {
+			// Handle generic exceptions.
+			e.printStackTrace();
+			responseObj.put("error","Ocurrio el siguiente error: " +  e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
+	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

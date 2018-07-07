@@ -58,6 +58,7 @@ public class Grupo implements Serializable{
 		this.codUsuarioCreacion = codUsuarioCreacion;
 	}
 	public Date getFechaUsuarioCreacion() {
+		
 		return fechaUsuarioCreacion;
 	}
 	public void setFechaUsuarioCreacion(Date fechaUsuarioCreacion) {
