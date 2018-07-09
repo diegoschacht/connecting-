@@ -105,20 +105,16 @@ public class Grupos {
 			if (cant_int < 1) {
 
 				if (ps.executeUpdate() != 0) {
-					responseObj.put("mensaje", "Los integrantes del grupo" + codGrupo + " fueron eliminados correctamente");
-					pt.executeUpdate();
+					
 					responseObj.put("mensaje", "El grupo" + codGrupo + " fue eliminado correctamente");
 					builder = Response.ok(responseObj);
-				} else {
-					if(pt.executeUpdate() !=0) {
-					responseObj.put("mensaje", "Grupo " + codGrupo + " eliminado correctamente");
-					builder = Response.ok(responseObj);}
+				}
 				
 				else {
 					responseObj.put("mensaje", "No se encontró grupo con el código " + codGrupo + "");
 					builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
 				}
-			}}else {
+			}else {
 				responseObj.put("mensaje", "“No se puede eliminar el grupo " + codGrupo + " este ya tiene " + 
 						"integrantes");
 				builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
