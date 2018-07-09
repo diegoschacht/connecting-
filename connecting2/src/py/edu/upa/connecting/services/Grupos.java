@@ -292,7 +292,7 @@ public class Grupos {
 				System.out.println("Grupo Vacio");
 				return Response.status(Response.Status.NOT_FOUND).build();
 			} else
-				return Response.ok(listaGrupo.get(0)).build();
+				return Response.ok(listaGrupo).build();
 		} catch (Exception e) {
 			// Handle generic exceptions.
 			e.printStackTrace();
