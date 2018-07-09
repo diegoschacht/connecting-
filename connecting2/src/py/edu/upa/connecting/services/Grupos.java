@@ -114,16 +114,16 @@ public class Grupos {
 					responseObj.put("mensaje", "Grupo " + codGrupo + " eliminado correctamente");
 					builder = Response.ok(responseObj);}
 				
-				else {
-					responseObj.put("mensaje", "No se encontró grupo con el código " + codGrupo + "");
-					builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+					else {
+						responseObj.put("mensaje", "No se encontró grupo con el código " + codGrupo + "");
+						builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
 				}
-			}}else {
-				responseObj.put("mensaje", "“No se puede eliminar el grupo " + codGrupo + " este ya tiene " + 
-						"integrantes");
-				builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
-				
-			}
+				}}else {
+					responseObj.put("mensaje", "“No se puede eliminar el grupo " + codGrupo + " este ya tiene " + 
+							"integrantes");
+					builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
+					
+				}
 
 		} catch (Exception e) {
 			e.printStackTrace();
