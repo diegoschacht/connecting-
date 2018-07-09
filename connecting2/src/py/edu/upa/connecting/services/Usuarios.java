@@ -49,7 +49,7 @@ public class Usuarios {
 			 										   + "values (?,?,?,?,?)")
 			 ) {
 			
-			ps.setString(1, usuario.getCodUsuario());
+			ps.setInt(1, usuario.getCodUsuario());
 			ps.setString(2, usuario.getNombre());
 			ps.setString(3, usuario.getTelefono());
 			ps.setString(4, usuario.getEmail());
@@ -86,7 +86,7 @@ public class Usuarios {
 			ps.setString(2, usuario.getTelefono());
 			ps.setString(3, usuario.getEmail());
 			ps.setString(4, usuario.getPassword());
-			ps.setString(5, usuario.getCodUsuario());
+			ps.setInt(5, usuario.getCodUsuario());
 			
 			ps.executeUpdate();
 			
@@ -180,13 +180,13 @@ public class Usuarios {
 		}
 	}
 	
-	private ArrayList<Usuario> cargarUsuarios(ResultSet rs) throws Exception {
+	public static ArrayList<Usuario> cargarUsuarios(ResultSet rs) throws Exception {
 		ArrayList<Usuario> listaUsuarios = new ArrayList<Usuario>();
 		
 		while(rs.next()) {
 			Usuario usuarioActual = new Usuario();
 			
-			usuarioActual.setCodUsuario(rs.getString("cod_usuario"));
+			usuarioActual.setCodUsuario(rs.getInt("cod_usuario"));
 			usuarioActual.setNombre(rs.getString("nombre"));
 			usuarioActual.setTelefono(rs.getString("telefono"));
 			usuarioActual.setEmail(rs.getString("email"));

@@ -18,7 +18,7 @@ public class Grupo implements Serializable{
 	String objetivo;
 	Integer latitud;
 	Integer longitud;
-	String codUsuarioCreacion;
+	Integer codUsuarioCreacion;
 	Date fechaUsuarioCreacion;
 	
 	public Long getCodGrupo() {
@@ -51,10 +51,11 @@ public class Grupo implements Serializable{
 	public void setLongitud(Integer longitud) {
 		this.longitud = longitud;
 	}
-	public String getCodUsuarioCreacion() {
+	
+	public Integer getCodUsuarioCreacion() {
 		return codUsuarioCreacion;
 	}
-	public void setCodUsuarioCreacion(String codUsuarioCreacion) {
+	public void setCodUsuarioCreacion(Integer codUsuarioCreacion) {
 		this.codUsuarioCreacion = codUsuarioCreacion;
 	}
 	public Date getFechaUsuarioCreacion() {
