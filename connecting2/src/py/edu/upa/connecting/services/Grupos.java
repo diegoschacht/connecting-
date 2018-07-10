@@ -227,7 +227,7 @@ public class Grupos {
 			sql += "and longitud = " + longitud;
 
 		if (codUsuario != null)
-			sql += "and codUsuario = " + codUsuario;
+			sql += "and cod_usuario_creacion = " + codUsuario;
 
 		try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -394,8 +394,6 @@ public class Grupos {
 			e.printStackTrace();
 			return 0;
 		}
-
 		return id;
 	}
-
 }

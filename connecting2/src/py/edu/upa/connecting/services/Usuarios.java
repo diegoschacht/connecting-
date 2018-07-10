@@ -76,10 +76,17 @@ public class Usuarios {
 
 		} catch (Exception e) {
 			// Handle generic exceptions.
-			e.printStackTrace();
-			responseObj.put("error","Ocurrio el siguiente error: " +  e.getMessage());
-			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			
+			if (e.getMessage().contains(" Ya existe la llave (email)")) {
+				responseObj.put("mensaje", "El usuario el usuario con mail : " + usuario.getEmail());
+				builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+			}
+				else {
+					responseObj.put("error","Ocurrio el siguiente error: " +  e.getMessage());
+					builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+				}
 		}
+		
 
 		return builder.build();
 	}
