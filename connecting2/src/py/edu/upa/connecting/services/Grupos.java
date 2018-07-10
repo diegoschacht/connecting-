@@ -65,7 +65,7 @@ public class Grupos {
 				responseObj.put("mensaje", "El usuario " + codUsuario + " abandono el grupo " + codGrupo);
 				builder = Response.ok(responseObj);
 			} else {
-				responseObj.put("mensaje", "No se encontró el grupo " + codGrupo + " o usuario " + codUsuario);
+				responseObj.put("mensaje", "No se encontró el grupo " + codGrupo + " o usuario " + codUsuario + " en el grupo o no existen");
 				builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
 			}
 
@@ -300,13 +300,19 @@ public class Grupos {
 	public Response crearGrupo(Grupo grupo) {
 
 		Response.ResponseBuilder builder = null;
+		Map<String, String> responseObj = new HashMap<String, String>();
+		
+		int id;
+
 
 		try (Connection con = ds.getConnection();
 				PreparedStatement ps = con.prepareStatement(
 						"insert into GRUPO (cod_grupo,nombre,objetivo,longitud,latitud,cod_usuario_creacion,fecha_creacion) "
 								+ "values (?,?,?,?,?,?,?)")) {
 
-			ps.setLong(1, grupo.getCodGrupo());
+			id=generarId();
+			
+			ps.setLong(1, id);
 			ps.setString(2, grupo.getNombre());
 			ps.setString(3, grupo.getObjetivo());
 			ps.setInt(4, grupo.getLongitud());
@@ -315,15 +321,21 @@ public class Grupos {
 			ps.setDate(7, new Date(System.currentTimeMillis()));
 
 			ps.executeUpdate();
-
-			builder = Response.ok();
+			
+			responseObj.put("mensaje","Grupo con id: "+id+" creado exitosamente");
+			builder = Response.status(Response.Status.CREATED).entity(responseObj);
 
 		} catch (Exception e) {
 			// Handle generic exceptions.
 			e.printStackTrace();
-			Map<String, String> responseObj = new HashMap<String, String>();
-			responseObj.put("error", "Ocurrio el siguiente error: " + e.getMessage());
-			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			
+			if (e.getMessage().contains("Ya existe la llave (nombre)")) {
+				responseObj.put("mensaje", "Ya existe grupo con el nombre: " + grupo.getNombre());
+				builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
+			} else {
+				responseObj.put("error", "Ocurrio el siguiente error: " + e.getMessage());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
 		}
 
 		return builder.build();
@@ -362,6 +374,28 @@ public class Grupos {
 		}
 		stmt.close();
 		return resultado;
+	}
+	
+	public int generarId() {
+		int id;
+
+		try ( Connection con = ds.getConnection();
+				Statement st = con.createStatement();
+				) {
+			
+			ResultSet rs = st.executeQuery("SELECT nextval('serial_grupo');");
+			
+			rs.next();
+			
+			id = rs.getInt(1);
+
+		}catch (Exception e) {
+
+			e.printStackTrace();
+			return 0;
+		}
+
+		return id;
 	}
 
 }
