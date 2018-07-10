@@ -95,30 +95,28 @@ public class Grupos {
 						.prepareStatement("delete from integrantes_grupo " + "where cod_grupo = ?")) {
 
 			ps.setInt(1, codGrupo);
-			
+
 			PreparedStatement pt = con
 					.prepareStatement("delete from grupo " + "where cod_grupo = ?");
 
-		pt.setInt(1, codGrupo);
+			pt.setInt(1, codGrupo);
 
 			int cant_int = cantidadFilasTabla("integrantes_grupo", codGrupo, con);
 			if (cant_int < 1) {
 
-				if (ps.executeUpdate() != 0) {
-					
-					responseObj.put("mensaje", "El grupo" + codGrupo + " fue eliminado correctamente");
+				if(pt.executeUpdate() !=0) {
+					responseObj.put("mensaje", "Grupo " + codGrupo + " eliminado correctamente");
 					builder = Response.ok(responseObj);
-				}
-				
+					}
 				else {
 					responseObj.put("mensaje", "No se encontró grupo con el código " + codGrupo + "");
 					builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
 				}
+
 			}else {
 				responseObj.put("mensaje", "“No se puede eliminar el grupo " + codGrupo + " este ya tiene " + 
 						"integrantes");
 				builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
-				
 			}
 
 		} catch (Exception e) {
