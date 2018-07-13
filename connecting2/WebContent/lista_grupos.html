@@ -102,7 +102,7 @@
 		});
 		
 		$(document).ready(function () {
-	        $("#formularioUsuario").jqxWindow({ width: 600, height: 300, autoOpen:false });
+	        $("#formularioGrupo").jqxWindow({ width: 600, height: 300, autoOpen:false });
 	    });
 		
 		//Configuraciones generales para invocaciones AJAX con JQuery
@@ -117,16 +117,16 @@
 		});
 	 	
 		
-		//Indica si el formulario se abre para editar usuario existente
+		//Indica si el formulario se abre para editar grupo existente
 		//o para crear uno nuevo
 	 	var modo;
 	 		 	
 	 	
 	 	/**
-	 	 * Mostrar el formulario de edicion de usuarios
+	 	 * Mostrar el formulario de edicion de grupos
 	 	 */
 	 	function formularioModificar() {
-	 		modo = 'edicion'; //se va a modificar usuario existente
+	 		modo = 'edicion'; //se va a modificar grupo existente
 	 		
 	 		//cargar los datos de la fila seleccionada al formulario
 	 		var selectedrowindex = $('#jqxgrid').jqxGrid('selectedrowindex'); 
@@ -144,9 +144,10 @@
 	 		$('#fechaUsuarioCreacion').val(grupo.fechaUsuarioCreacion);
 
 	 		$("#codGrupo").prop("readonly", true);
+	 		$("#fechaUsuarioCreacion").prop("readonly", true);
 	 		
 	 		//mostrar el formulario
-	 		$('#formularioUsuario').jqxWindow('open');
+	 		$('#formularioGrupo').jqxWindow('open');
 	 	}
 	 	
 	 	/**
@@ -156,18 +157,20 @@
 	 		modo = 'creacion'; //se va a crear nuevo usuario
 	 			 		
 	 		
-	 		$('#codGrupo').val('');
+	 		$("#filaCodG").hide();
+	 		
 	 		$('#nombre').val('');
 	 		$('#objetivo').val('');
-	 		$('#latitud').val('');
-	 		$('#longitud').val('');
-	 		$('#codUsuarioCreacion').val('');
-	 		$('#fechaUsuarioCreacion').val('');
+	 		$('#latitud').val(0);
+	 		$('#longitud').val(0);
+	 		$('#codUsuarioCreacion').val(0);
 	 		
-	 		$("#codGrupo").prop("readonly", false);
+	 		$('#fechaUsuarioCreacion').hide();
+
 	 		
+	 			 		
 	 		//mostrar el formulario
-	 		$('#formularioUsuario').jqxWindow('open');
+	 		$('#formularioGrupo').jqxWindow('open');
 	 	}
 	 	
 	 	
@@ -180,29 +183,28 @@
 	 		
 	 		var grupo = {};
 	 		
-	 		grupo.codGrupo = $('#codGrupo').val();
+	 		
 	 		grupo.nombre = $('#nombre').val();
 	 		grupo.objetivo = $('#objetivo').val();
 	 		grupo.latitud = $('#latitud').val();
 	 		grupo.longitud = $('#longitud').val();
 	 		grupo.codUsuarioCreacion = $('#codUsuarioCreacion').val();
-	 		grupo.fechaUsuarioCreacion = $('#fechaUsuarioCreacion').val();
 	
 	 		if (modo == 'edicion') {
 	 			$.ajax({
-	 			    type: "PUT",
-	 			    url: "rest/grupos",
+	 			    type: "POST",
+	 			    url: "rest/grupos/" + $('#codGrupo').val(),
 	 			    contentType: "application/json",
 	 			    data: grupo,
 	 			    success:function() {
 	 					alert('Grupo guardado exitosamente');	
-	 					$('#formularioUsuario').jqxWindow('close');
+	 					$('#formularioGrupo').jqxWindow('close');
 	 					location.reload(true);
 	 				  }	
 	 			});
 	 		} else {  //creacion
 	 		
-	 			console.log("haciendo post de usuario ...")
+	 			console.log("haciendo post de grupo ...")
 	 			console.log(grupo);
 	 			
 	 			$.ajax({
@@ -212,7 +214,7 @@
 	 			    data: grupo,
 	 			    success:function() {
 	 					alert('Grupo guardado exitosamente');	
-	 					$('#formularioUsuario').jqxWindow('close');
+	 					$('#formularioGrupo').jqxWindow('close');
 	 					location.reload(true);
 	 				  }	
 	 			});
@@ -240,13 +242,13 @@
 	</script>
 	
 	
-	<!-- Formulario para creacion y edicion de usuarios -->
-	<div id="formularioUsuario">
+	<!-- Formulario para creacion y edicion de grupos -->
+	<div id="formularioGrupo">
 		<div>Formulario de Grupo</div>
 		<div>
 			<form>
 				<table align="center">
-					<tr>
+					<tr id="filaCodG">
 						<td>Codigo de Grupo:</td><td><input id="codGrupo" type="number"/></td>
 					</tr>
 					<tr>
@@ -269,7 +271,7 @@
 					</tr>
 					<tr>
 						<td><input type="button" value="Guardar" onclick="guardar();" /></td>
-						<td><input type="button" value="Cancelar" onclick="$('#formularioUsuario').jqxWindow('close');"  /></td>
+						<td><input type="button" value="Cancelar" onclick="$('#formularioGrupo').jqxWindow('close');"  /></td>
 					</tr>
 				</table>
 			</form>			

@@ -150,14 +150,15 @@
 	 		modo = 'creacion'; //se va a crear nuevo usuario
 	 			 		
 	 		
-	 		$('#codUsuario').val('');
+	 		$("#filaCodU").hide();
+	 		
 	 		$('#nombre').val('');
 	 		$('#telefono').val('');
 	 		$('#email').val('');
 	 		$('#password').val('');
 	 		
-	 		$("#password").prop("readonly", false);
-	 		$("#codUsuario").prop("readonly", false);
+	 		$("#codUsuario").prop("readonly", true);
+	 		$("#password").prop("readonly", true);
 	 		
 	 		//mostrar el formulario
 	 		$('#formularioUsuario').jqxWindow('open');
@@ -237,7 +238,7 @@
 		<div>
 			<form>
 				<table align="center">
-					<tr>
+					<tr id="filaCodU">
 						<td>Codigo de Usuario:</td><td><input id="codUsuario" type="text"/></td>
 					</tr>
 					<tr>
