@@ -86,8 +86,6 @@ public class Usuarios {
 					builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 				}
 		}
-		
-
 		return builder.build();
 	}
 
