@@ -165,7 +165,10 @@ public class Usuarios {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Usuario obtenerUsuarios(@PathParam("id") String codUsuario) {
+	public Response obtenerUsuarios(@PathParam("id") Integer codUsuario) {
+		
+		Response.ResponseBuilder builder = null;
+		Map<String, String> responseObj = new HashMap<String, String>();
 
 		System.out.println("Se va a buscar al usuario : [" + codUsuario + "]");
 
@@ -174,15 +177,18 @@ public class Usuarios {
 						+ "where cod_usuario = ? ")
 				) {
 
-			ps.setString(1, codUsuario);
+			ps.setInt(1, codUsuario);
 
 			ResultSet rs = ps.executeQuery();
 			ArrayList<Usuario> listaUsuario = cargarUsuarios(rs);
-
-			if (listaUsuario.size() == 0)
-				return null;
+				
+			if (listaUsuario.size() == 0) {
+				responseObj.put("mensaje","No se ha encontrado");
+			    builder = Response.status(Response.Status.NOT_FOUND).entity(responseObj);
+				return builder.build();}
 			else
-				return listaUsuario.get(0);
+				
+				return Response.ok(listaUsuario.get(0)).build();
 
 		} catch (Exception e) {
 			// Handle generic exceptions.
