@@ -156,8 +156,7 @@
 	 	function formularioCrear() {
 	 		modo = 'creacion'; //se va a crear nuevo usuario
 	 			 		
-	 		
-	 		$("#filaCodG").hide();
+
 	 		
 	 		$('#nombre').val('');
 	 		$('#objetivo').val('');
@@ -165,12 +164,12 @@
 	 		$('#longitud').val(0);
 	 		$('#codUsuarioCreacion').val(0);
 	 		
-	 		$('#fechaUsuarioCreacion').hide();
-
-	 		
 	 			 		
 	 		//mostrar el formulario
 	 		$('#formularioGrupo').jqxWindow('open');
+	 		
+	 		$("#filaCodG").hide();
+	 		$("#filaFechaGrupoCreacion").hide();
 	 	}
 	 	
 	 	
@@ -182,7 +181,6 @@
 	 		console.log('Guardando en modo ' + modo);
 	 		
 	 		var grupo = {};
-	 		
 	 		
 	 		grupo.nombre = $('#nombre').val();
 	 		grupo.objetivo = $('#objetivo').val();
@@ -212,11 +210,19 @@
 	 			    url: "rest/grupos",
 	 			    contentType: "application/json",
 	 			    data: grupo,
-	 			    success:function() {
+	 			   statusCode:{
+	 			   	201:function() {
 	 					alert('Grupo guardado exitosamente');	
 	 					$('#formularioGrupo').jqxWindow('close');
 	 					location.reload(true);
-	 				  }	
+	 				  },
+	 				409:function(mensaje) {
+ 					alert(mensaje.mensaje);	
+ 					$('#formularioGrupo').jqxWindow('close');
+ 					location.reload(true);
+ 				  }
+	 		
+	 			   }
 	 			});
 	 		}
 	 	}
@@ -249,7 +255,7 @@
 			<form>
 				<table align="center">
 					<tr id="filaCodG">
-						<td>Codigo de Grupo:</td><td><input id="codGrupo" type="number"/></td>
+						<td>Codigo de Grupo:</td><td><input id="codGrupo" type="text"/></td>
 					</tr>
 					<tr>
 						<td>Nombre:</td><td> <input id="nombre" type="text"/></td>
@@ -266,8 +272,8 @@
 					<tr>
 						<td>Creado por el usuario:</td><td> <input id="codUsuarioCreacion" type="text"/></td>
 					</tr>
-					<tr>
-						<td>Fecha creacion:</td><td> <input id="fechaUsuarioCreacion" type="text"/></td>
+					<tr id="filaFechaGrupoCreacion">
+						<td>Fecha creacion:</td><td> <input id="fecha"  type="text"/></td>
 					</tr>
 					<tr>
 						<td><input type="button" value="Guardar" onclick="guardar();" /></td>
