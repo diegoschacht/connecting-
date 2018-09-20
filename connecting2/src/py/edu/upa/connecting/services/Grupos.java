@@ -191,8 +191,8 @@ public class Grupos {
 
 			ps.setString(1, grupo.getNombre());
 			ps.setString(2, grupo.getObjetivo());
-			ps.setInt(3, grupo.getLongitud());
-			ps.setInt(4, grupo.getLatitud());
+			ps.setDouble(3, grupo.getLongitud());
+			ps.setDouble(4, grupo.getLatitud());
 			ps.setLong(5, codGrupo);
 
 			if (ps.executeUpdate() != 0) {
@@ -215,19 +215,25 @@ public class Grupos {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Grupo> obtenerUsuarios(@QueryParam("latitud") Integer latitud, @QueryParam("longitud") Integer longitud,
+	public List<Grupo> obtenerUsuarios(@QueryParam("latitud") Double latitud, @QueryParam("longitud") Double longitud,
 			@QueryParam("cod_usuario") String codUsuario) {
 
 		String sql = "select * from GRUPO where 1 = 1 ";
 
-		if (latitud != null)
-			sql += "and latitud = " + latitud;
+		if (latitud != null) {			
+			sql += " and latitud between " + (latitud-10) + " and " + (latitud+10);
+		}
+			
 
-		if (longitud != null)
-			sql += "and longitud = " + longitud;
+		if (longitud != null) {
+			
+			sql += " and longitud between " + (longitud-10) + " and " + (longitud+10);
+		}
 
 		if (codUsuario != null)
-			sql += "and cod_usuario_creacion = " + codUsuario;
+			sql = "select grupo.cod_grupo, nombre, objetivo, cod_usuario_creacion, fecha_creacion, latitud, longitud from grupo "
+					+ "join integrantes_grupo on (grupo.cod_grupo = integrantes_grupo.cod_grupo) "
+					+ "where cod_usuario = " + codUsuario;
 
 		try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -315,8 +321,8 @@ public class Grupos {
 			ps.setLong(1, id);
 			ps.setString(2, grupo.getNombre());
 			ps.setString(3, grupo.getObjetivo());
-			ps.setInt(4, grupo.getLongitud());
-			ps.setInt(5, grupo.getLatitud());
+			ps.setDouble(4, grupo.getLongitud());
+			ps.setDouble(5, grupo.getLatitud());
 			ps.setInt(6, grupo.getCodUsuarioCreacion());
 			ps.setDate(7, new Date(System.currentTimeMillis()));
 
@@ -350,8 +356,8 @@ public class Grupos {
 			grupoActual.setCodGrupo(rs.getLong("cod_grupo"));
 			grupoActual.setNombre(rs.getString("nombre"));
 			grupoActual.setObjetivo(rs.getString("objetivo"));
-			grupoActual.setLatitud(rs.getInt("latitud"));
-			grupoActual.setLongitud(rs.getInt("longitud"));
+			grupoActual.setLatitud(rs.getDouble("latitud"));
+			grupoActual.setLongitud(rs.getDouble("longitud"));
 			grupoActual.setCodUsuarioCreacion(rs.getInt("cod_usuario_creacion"));
 			grupoActual.setFechaUsuarioCreacion(rs.getDate("fecha_creacion"));
 

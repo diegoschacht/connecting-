@@ -39,6 +39,19 @@
   	function irListaGrupos() {
   		$("#placeHolder").attr('src',"lista_grupos.html");
   	}
+  	
+  	function irListaGruposCercanos() {
+  		$("#placeHolder").attr('src',"lista_grupos_cercanos.html");
+  	}
+  	
+  	function irGruposEnMapa() {
+  		$("#placeHolder").attr('src',"grupos_mapa.html");
+  	}
+  	
+  	function irVerMisGrupos() {
+  		$("#placeHolder").attr('src',"mis_grupos.html");
+  	}
+  	
   	function cerrarSesion() {
   		localStorage.setItem('token',null);
   		location.reload();
@@ -125,6 +138,9 @@
 		         <li>Grupos
 		         <ul>
 		              <li><a href="javascript:irListaGrupos();">Administraci&oacute;n de Grupos</a></li>
+		              <li><a href="javascript:irListaGruposCercanos();">Grupos Cercanos</a></li>
+		              <li><a href="javascript:irGruposEnMapa();">Mostrar Grupos en Mapa</a></li>
+		              <li><a href="javascript:irVerMisGrupos();">Ver mis Grupos</a></li>
 		         </ul>
 		         </li>
 		      </ul>

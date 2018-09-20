@@ -88,9 +88,10 @@
 			 	theme: 'energyblue',
 				source: dataAdapter,
 				pageable: true,
+				pagesize: 20,
 			    columns: [
 			        { text: 'Codigo de grupo', datafield: 'codGrupo', width: 180 },
-			        { text: 'Nombre', datafield: 'nombre', width: 180 },
+			        { text: 'Nombres', datafield: 'nombre', width: 180 },
 			        { text: 'Objetivo', datafield: 'objetivo', width: 100 },
 			        { text: 'Latitud', datafield: 'latitud', width: 180},
 			        { text: 'Longitud', datafield: 'longitud', width: 100},
@@ -156,8 +157,6 @@
 	 	function formularioCrear() {
 	 		modo = 'creacion'; //se va a crear nuevo usuario
 	 			 		
-
-	 		
 	 		$('#nombre').val('');
 	 		$('#objetivo').val('');
 	 		$('#latitud').val(0);
@@ -171,8 +170,7 @@
 	 		$("#filaCodG").hide();
 	 		$("#filaFechaGrupoCreacion").hide();
 	 	}
-	 	
-	 	
+	 		 	
 	 	/**
 	 	 * Enviar los cambios al servidor
 	 	 */
