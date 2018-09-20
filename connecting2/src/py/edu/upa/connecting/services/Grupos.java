@@ -49,7 +49,7 @@ public class Grupos {
 	@DELETE
 	@Path("/{id_grupo}/integrantes/{id_usuario}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response abandonarGrupo(@PathParam("id_usuario") String codUsuario, @PathParam("id_grupo") int codGrupo) {
+	public Response abandonarGrupo(@PathParam("id_usuario") int codUsuario, @PathParam("id_grupo") int codGrupo) {
 
 		Map<String, String> responseObj = new HashMap<String, String>();
 		Response.ResponseBuilder builder = null;
@@ -58,7 +58,7 @@ public class Grupos {
 				PreparedStatement ps = con.prepareStatement(
 						"delete from integrantes_grupo " + "where cod_usuario = ? " + "and cod_grupo = ?;")) {
 
-			ps.setString(1, codUsuario);
+			ps.setInt(1, codUsuario);
 			ps.setInt(2, codGrupo);
 
 			if (ps.executeUpdate() != 0) {

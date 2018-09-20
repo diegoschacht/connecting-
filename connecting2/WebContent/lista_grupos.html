@@ -38,7 +38,7 @@
 			/*
 			 * Inicializar el toolbar
 			 */
-			 $("#jqxToolBar").jqxToolBar({ width: "100%", height: 35, tools: "button | button | button",
+			 $("#jqxToolBar").jqxToolBar({ width: "100%", height: 35, tools: "button | button | button | button | button",
 	                minWidth:20,
 				 	initTools: function (type, index, tool, menuToolIninitialization) {
 	                    switch (index) {
@@ -53,6 +53,14 @@
 	                        case 2:
 	                        	tool.text("Eliminar");
 	                        	tool.on("click",eliminar);
+	                            break;
+	                        case 3:
+	                        	tool.text("Unirse");
+	                        	tool.on("click",unirse);
+	                            break;
+	                        case 4:
+	                        	tool.text("Abandonar");
+	                        	tool.on("click",abandonar);
 	                            break;
 	                    }
 	                }
@@ -90,13 +98,13 @@
 				pageable: true,
 			    columns: [
 			        { text: 'Codigo de grupo', datafield: 'codGrupo', width: 180 },
-			        { text: 'Nombre', datafield: 'nombre', width: 180 },
+			        { text: 'Nombres', datafield: 'nombre', width: 180 },
 			        { text: 'Objetivo', datafield: 'objetivo', width: 100 },
 			        { text: 'Latitud', datafield: 'latitud', width: 180},
 			        { text: 'Longitud', datafield: 'longitud', width: 100},
 			        { text: 'Creado por el usuario', datafield: 'codUsuarioCreacion', width: 100},
 			        { text: 'Fecha creacion', datafield: 'fechaUsuarioCreacion', width: 100},
-
+			    
 			    ]
 			});
 		});
@@ -125,6 +133,7 @@
 	 	/**
 	 	 * Mostrar el formulario de edicion de grupos
 	 	 */
+	 	
 	 	function formularioModificar() {
 	 		modo = 'edicion'; //se va a modificar grupo existente
 	 		
@@ -214,6 +223,7 @@
 	 			   	201:function() {
 	 					alert('Grupo guardado exitosamente');	
 	 					$('#formularioGrupo').jqxWindow('close');
+	 					
 	 					location.reload(true);
 	 				  },
 	 				409:function(mensaje) {
@@ -245,6 +255,41 @@
  			});
 	 	}
 	 	
+	 	function unirse() {
+	 		//unirse a un grupo 
+	 		var selectedrowindex = $('#jqxgrid').jqxGrid('selectedrowindex'); 
+	 		var grupo = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex); 
+	 		
+	 		console.log('Id de fila:' + selectedrowindex);
+	 		console.log('Grupo a unirse: ' + grupo.codGrupo);
+		 		
+	 		$.ajax({
+ 			    type: "POST",
+ 			    url: "rest/grupos/"+grupo.codGrupo+"/integrantes/" + localStorage.getItem('codUser'),
+ 			    success:function() {
+ 					alert('Te has unido exitosamente');	 					
+ 					location.reload(true);
+ 				  }	
+ 			});
+	 	}
+	 	
+	 	function abandonar() {
+	 		//unirse a un grupo 
+	 		var selectedrowindex = $('#jqxgrid').jqxGrid('selectedrowindex'); 
+	 		var grupo = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex); 
+	 		
+	 		console.log('Id de fila:' + selectedrowindex);
+	 		console.log('Grupo a abandonar: ' + grupo.codGrupo);
+		 		
+	 		$.ajax({
+ 			    type: "DELETE",
+ 			    url: "rest/grupos/"+grupo.codGrupo+"/integrantes/" + localStorage.getItem('codUser'),
+ 			    success:function() {
+ 					alert('Has abandonado exitosamente');	 					
+ 					location.reload(true);
+ 				  }	
+ 			});
+	 	}
 	</script>
 	
 	
