@@ -1,0 +1,108 @@
+<html>
+<head>
+	<meta charset="UTF-8" />
+	    <!-- add one of the jQWidgets styles -->
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.darkblue.css" type="text/css" />
+    
+    <!-- add the jQuery script -->
+    <script type="text/javascript" src="scripts/jquery-3.2.0.js"></script>
+    <!-- add the jQWidgets framework -->
+    <script type="text/javascript" src="jqwidgets/jqx-all.js"></script>
+    <!--  script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxdockpanel.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxlistmenu.js"></script -->
+</head>
+<body>
+	
+	<table width="60%" align="center">
+	<tr>
+		<td>
+			<b>Grupos Cercanos</b><br><br>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div id="jqxToolBar"></div>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<div id="jqxgrid" align="center"></div>
+		</td>
+	</tr>
+	</table>
+	<script>
+		$(document).ready(function () {	
+			
+			var latitud;
+			var longitud;
+			
+		 	    if (navigator.geolocation) {
+		 	        navigator.geolocation.getCurrentPosition(showPosition);
+		 	    } else { 
+		 	    	alert('No se pudo obtener la ubicacion');    
+		 	    }			
+			/*
+			 * Inicializar la grilla
+			 */
+			 
+			function showPosition(position) {
+				latitud=position.coords.latitude;
+				longitud=position.coords.longitude;
+				
+				var source =
+				{
+				    datatype: "json",
+				    datafields: [
+				        { name: 'codGrupo' },
+				        { name: 'nombre' },
+				        { name: 'objetivo'},
+				        { name: 'latitud'},
+				        { name: 'longitud'},
+				        { name: 'codUsuarioCreacion'},
+				        { name: 'fechaUsuarioCreacion'},
+				    ],
+				    url: "rest/grupos/?latitud=" + latitud + "&longitud=" + longitud
+				};
+				var dataAdapter = new $.jqx.dataAdapter(source, {
+				    loadComplete: function (data) { },
+				    loadError: function (xhr, status, error) { }    
+				});
+				$("#jqxgrid").jqxGrid(
+				{
+				 	autoheight: true,
+				 	autowidth: true,
+				 	theme: 'energyblue',
+					source: dataAdapter,
+					pageable: true,
+					pagesize: 20,
+				    columns: [
+				        { text: 'Codigo de grupo', datafield: 'codGrupo', width: 180 },
+				        { text: 'Nombres', datafield: 'nombre', width: 180 },
+				        { text: 'Objetivo', datafield: 'objetivo', width: 100 },
+				        { text: 'Latitud', datafield: 'latitud', width: 180},
+				        { text: 'Longitud', datafield: 'longitud', width: 100},
+				        { text: 'Creado por el usuario', datafield: 'codUsuarioCreacion', width: 100},
+				        { text: 'Fecha creacion', datafield: 'fechaUsuarioCreacion', width: 100},
+
+				    ]
+				});	
+			}	 
+		});
+		
+		//Configuraciones generales para invocaciones AJAX con JQuery
+		$.ajaxSetup({
+		    contentType : 'application/json',
+		    processData : false
+		});
+		$.ajaxPrefilter( function( options, originalOptions, jqXHR ) {
+		    if (options.data){
+		        options.data=JSON.stringify(options.data);
+		    }
+		});
+	 	
+	</script>
+</body>
+</html>
